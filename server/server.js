@@ -3,6 +3,8 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const db = require("./config/db");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
 const app = express();
 
@@ -13,6 +15,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 const port = 3001;
 
+// routing
 app.post("/api/login", (req, res) => {
   const { name, password } = req.body;
 
@@ -38,7 +41,21 @@ app.post("/api/login", (req, res) => {
             result[0].password
           );
           if (isCorrectPassword) {
-            res.json({ message: "로그인 성공" });
+            jwt.sign(
+              { id: result[0].id },
+              process.env.JWT_SECRET,
+              { expiresIn: process.env.JWT_EXPIRES_IN },
+              (err, token) => {
+                console.log(token);
+                if (err) {
+                  res.status(500).json({ message: "로그인 재시도" });
+                }
+                res.json({
+                  id: result[0].id,
+                  accessToken: token,
+                });
+              }
+            );
           } else {
             res.status(400).json({ message: "비밀번호 확인" });
           }
