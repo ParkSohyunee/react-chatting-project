@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const db = require("./config/db");
+const bcrypt = require("bcrypt");
+
 const app = express();
 
 // middleware
@@ -9,17 +11,13 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const port = 3001; // react의 포트번호와 다르게 하기 위해
+const port = 3001;
 
 // routing
-app.get("/api", (req, res) => {
-  res.json({ title: "Hello World!" });
-  res.send("Hello World!");
-});
-
-// routing
-app.post("/api/signup", (req, res) => {
-  const { id, name, age, password } = req.body;
+app.post("/api/signup", async (req, res) => {
+  const { name, password } = req.body;
+  const saltRounds = 10;
+  const hashPassword = await bcrypt.hash(password, saltRounds);
 
   db.getConnection((err, connection) => {
     if (err) {
@@ -27,17 +25,15 @@ app.post("/api/signup", (req, res) => {
       res.status(500).send("DB connection error");
       return;
     }
-    console.log("DB 연결 완료");
-
     connection.query(
-      "insert into users (id, name, age, password) values (?,?,?,?);",
-      [id, name, age, password],
+      "insert into users (name, password) values (?,?);",
+      [name, hashPassword],
       (error, result) => {
         connection.release(); // connection을 pool에 반환
 
         if (error) {
           console.dir("쿼리 실행 에러: ", error);
-          res.status(500).send("DB connection error");
+          res.status(500).send("회원가입 실행 에러");
           return;
         }
         if (result) {
@@ -45,10 +41,8 @@ app.post("/api/signup", (req, res) => {
 
           // 쿼리 성공하면 리스폰스 보내고, 응답 종료
           res.json({
-            userId: id,
-            userName: name,
-            userAge: age,
-            userPassword: password,
+            message: "로그인 성공!",
+            // userId: id, // 무슨아이디...?
           });
         }
       }
