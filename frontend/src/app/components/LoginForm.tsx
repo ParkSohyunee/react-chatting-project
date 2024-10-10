@@ -1,16 +1,14 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useState } from "react";
-import { createUser } from "../api/auth";
+import { loginUser } from "../api/auth";
 
 export interface FormData {
   name: string;
   password: string;
 }
 
-export default function SignupPage() {
-  const router = useRouter();
+export default function LoginForm() {
   const [values, setValues] = useState<FormData>({
     name: "",
     password: "",
@@ -32,8 +30,7 @@ export default function SignupPage() {
     }
 
     try {
-      await createUser(values);
-      router.push("/login");
+      await loginUser(values);
     } catch (error) {
       console.log(error);
     }
@@ -41,7 +38,7 @@ export default function SignupPage() {
 
   return (
     <section className="flex flex-col items-center mt-8">
-      <h1 className="text-2xl mb-8">🖌️ 회원가입</h1>
+      <h1 className="text-2xl mb-8">🪄 로그인</h1>
       <form onSubmit={onSubmit} className="text-xl flex flex-col gap-2">
         <div className="flex gap-4 items-center">
           <label htmlFor="name" className="w-20">
@@ -74,7 +71,7 @@ export default function SignupPage() {
           type="submit"
           className="p-1 mt-4 rounded-md bg-amber-100 outline-none"
         >
-          회원가입
+          로그인
         </button>
       </form>
     </section>
