@@ -67,7 +67,6 @@ app.post("/api/login", (req, res) => {
   });
 });
 
-// routing
 app.post("/api/signup", async (req, res) => {
   const { name, password } = req.body;
   const saltRounds = 10;
