@@ -72,35 +72,30 @@ app.post("/api/signup", async (req, res) => {
   const saltRounds = 10;
   const hashPassword = await bcrypt.hash(password, saltRounds);
 
-  db.getConnection((err, connection) => {
-    if (err) {
-      console.log("DB connection error: ", err);
-      res.status(500).send("DB connection error");
-      return;
+  try {
+    const connection = await db.getConnection();
+    const sql = "INSERT INTO users (name, password) VALUES (?,?);";
+    const [result] = await connection.query(sql, [name, hashPassword]);
+
+    connection.release();
+
+    if (result.affectedRows > 0) {
+      console.log("result: ", result); // ResultSetHeader
+
+      return res.status(200).json({
+        message: "회원가입 성공",
+        userId: result.insertId,
+      });
+    } else {
+      return res.status(500).json({
+        message: "회원가입 실행 에러",
+      });
     }
-    connection.query(
-      "insert into users (name, password) values (?,?);",
-      [name, hashPassword],
-      (error, result) => {
-        connection.release(); // connection을 pool에 반환
-
-        if (error) {
-          console.dir("쿼리 실행 에러: ", error);
-          res.status(500).send("회원가입 실행 에러");
-          return;
-        }
-        if (result.affectedRows > 0) {
-          console.log("result: ", result);
-
-          // 쿼리 성공하면 리스폰스 보내고, 응답 종료
-          res.json({
-            message: "회원가입 성공!",
-            // userId: id, // 무슨아이디...?
-          });
-        }
-      }
-    );
-  });
+  } catch (error) {
+    console.log(error);
+    connection.release();
+    res.status(500).json({ message: error.message });
+  }
 });
 
 // server start

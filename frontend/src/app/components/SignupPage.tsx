@@ -32,10 +32,18 @@ export default function SignupPage() {
     }
 
     try {
-      await createUser(values);
-      router.push("/login");
+      const response = await createUser(values);
+      console.log("회원가입 결과: ", response);
+
+      if (response.status === 200) {
+        alert("회원가입 성공! 로그인 해주세요.");
+        router.push("/login");
+      } else {
+        alert("회원가입을 다시 시도해주세요.");
+      }
     } catch (error) {
       console.log(error);
+      alert("회원가입을 다시 시도해주세요.");
     }
   };
 

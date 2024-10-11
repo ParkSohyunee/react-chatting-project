@@ -11,7 +11,7 @@ async function createUser(user: FormData) {
       body: JSON.stringify(user),
     }
   );
-  return response.json();
+  return response;
 }
 
 async function loginUser(user: FormData) {
