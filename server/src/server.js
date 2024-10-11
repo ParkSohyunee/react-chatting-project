@@ -36,23 +36,23 @@ app.post("/api/login", async (req, res) => {
           const token = jwt.sign({ id: result[0].id }, process.env.JWT_SECRET, {
             expiresIn: process.env.JWT_EXPIRES_IN,
           });
-          res.json({
+          res.status(200).json({
             id: result[0].id,
             accessToken: token,
           });
         } catch (error) {
-          res.status(500).json({ message: "로그인 재시도" });
+          res.status(500).json({ message: "로그인을 다시 시도해주세요." });
         }
       } else {
-        return res.status(400).json({ message: "비밀번호를 확인해주세요." });
+        return res.status(400).json({ message: "비빌번호를 확인해주세요." });
       }
     } else {
-      res.status(400).json({ message: "존재하지 않는 사용자" });
+      res.status(400).json({ message: "닉네임을 확인해주세요." });
     }
   } catch (error) {
     console.log(error);
     connection.release();
-    res.status(400).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 });
 
@@ -69,16 +69,9 @@ app.post("/api/signup", async (req, res) => {
     connection.release();
 
     if (result.affectedRows > 0) {
-      console.log("result: ", result); // ResultSetHeader
-
-      return res.status(200).json({
-        message: "회원가입 성공",
-        userId: result.insertId,
-      });
+      res.status(200).json({ userId: result.insertId });
     } else {
-      return res.status(500).json({
-        message: "회원가입 실행 에러",
-      });
+      res.status(500).json({ message: "회원가입 다시 시도해주세요." });
     }
   } catch (error) {
     console.log(error);

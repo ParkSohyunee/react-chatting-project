@@ -1,30 +1,17 @@
+import axios from "axios";
 import { FormData } from "../components/SignupPage";
 
+const axiosInstance = axios.create({
+  baseURL: `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api`,
+});
+
 async function createUser(user: FormData) {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/signup`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(user),
-    }
-  );
+  const response = await axiosInstance.post("/signup", user);
   return response;
 }
 
 async function loginUser(user: FormData) {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/login`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(user),
-    }
-  );
+  const response = await axiosInstance.post("/login", user);
   return response;
 }
 

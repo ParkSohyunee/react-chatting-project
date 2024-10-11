@@ -2,6 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useState } from "react";
+import { AxiosError } from "axios";
+
 import { createUser } from "../api/auth";
 
 export interface FormData {
@@ -39,11 +41,12 @@ export default function SignupPage() {
         alert("회원가입 성공! 로그인 해주세요.");
         router.push("/login");
       } else {
-        alert("회원가입을 다시 시도해주세요.");
+        alert(response.data.message);
       }
     } catch (error) {
-      console.log(error);
-      alert("회원가입을 다시 시도해주세요.");
+      if (error instanceof AxiosError) {
+        alert(error.response?.data.message);
+      }
     }
   };
 
