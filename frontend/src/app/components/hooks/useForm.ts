@@ -1,6 +1,6 @@
 import { ChangeEvent, useState } from "react";
 
-export interface UseFormProps<T> {
+interface UseFormProps<T> {
   initialState: T;
 }
 
