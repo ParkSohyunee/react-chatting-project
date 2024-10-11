@@ -16,55 +16,44 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const port = 3001;
 
 // routing
-app.post("/api/login", (req, res) => {
+app.post("/api/login", async (req, res) => {
   const { name, password } = req.body;
 
-  db.getConnection((err, connection) => {
-    if (err) {
-      console.log("DB connection error: ", err);
-      res.status(500).send("DB connection error");
-      return;
-    }
-    connection.query(
-      "select * from users where name = (?);",
-      [name],
-      async (error, result) => {
-        connection.release();
+  try {
+    const connection = await db.getConnection();
+    const sql = "SELECT * FROM users WHERE name = (?)";
+    const [result] = await connection.query(sql, [name]);
 
-        if (error) {
-          res.status(500).send("로그인 쿼리 실행 에러");
-          return;
+    connection.release();
+
+    if (result.length > 0) {
+      const isCorrectPassword = await bcrypt.compare(
+        password,
+        result[0].password
+      );
+      if (isCorrectPassword) {
+        try {
+          const token = jwt.sign({ id: result[0].id }, process.env.JWT_SECRET, {
+            expiresIn: process.env.JWT_EXPIRES_IN,
+          });
+          res.json({
+            id: result[0].id,
+            accessToken: token,
+          });
+        } catch (error) {
+          res.status(500).json({ message: "로그인 재시도" });
         }
-        if (result.length > 0) {
-          const isCorrectPassword = await bcrypt.compare(
-            password,
-            result[0].password
-          );
-          if (isCorrectPassword) {
-            jwt.sign(
-              { id: result[0].id },
-              process.env.JWT_SECRET,
-              { expiresIn: process.env.JWT_EXPIRES_IN },
-              (err, token) => {
-                console.log(token);
-                if (err) {
-                  res.status(500).json({ message: "로그인 재시도" });
-                }
-                res.json({
-                  id: result[0].id,
-                  accessToken: token,
-                });
-              }
-            );
-          } else {
-            res.status(400).json({ message: "비밀번호 확인" });
-          }
-        } else {
-          res.status(400).json({ message: "존재하지 않는 사용자" });
-        }
+      } else {
+        return res.status(400).json({ message: "비밀번호를 확인해주세요." });
       }
-    );
-  });
+    } else {
+      res.status(400).json({ message: "존재하지 않는 사용자" });
+    }
+  } catch (error) {
+    console.log(error);
+    connection.release();
+    res.status(400).json({ message: error.message });
+  }
 });
 
 app.post("/api/signup", async (req, res) => {

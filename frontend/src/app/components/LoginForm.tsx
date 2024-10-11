@@ -30,9 +30,17 @@ export default function LoginForm() {
     }
 
     try {
-      await loginUser(values);
+      const response = await loginUser(values);
+      console.log(response);
+
+      if (response.status === 200) {
+        // 로그인하면 채팅방 목록 페이지로 이동
+      } else {
+        alert("닉네임, 비빌번호를 확인해주세요.");
+      }
     } catch (error) {
       console.log(error);
+      alert("닉네임, 비빌번호를 확인해주세요.");
     }
   };
 
