@@ -31,8 +31,9 @@ export default function Login() {
       console.log("로그인 결과: ", response);
 
       if (response.status === 200) {
-        axiosInstance.defaults.headers.common["Authorization"] =
-          response.data.accessToken;
+        axiosInstance.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${response.data.accessToken}`;
 
         router.push("/chattings");
       } else {
@@ -65,7 +66,7 @@ export default function Login() {
           maxLength={20}
           {...getTextFieldInputProps("password")}
         />
-        <CustomButton text="로그인" type="submit" />
+        <CustomButton type="submit">로그인</CustomButton>
       </form>
     </section>
   );
