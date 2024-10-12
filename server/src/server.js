@@ -80,6 +80,56 @@ app.post("/api/signup", async (req, res) => {
   }
 });
 
+app.post("/api/chattings", async (req, res) => {
+  const { name } = req.body;
+
+  const token = req.headers["authorization"]?.split(" ")[1];
+
+  // 토큰이 없는 경우
+  if (!token) {
+    console.log("토큰이 없는데 로그인이 필요한 기능을 사용하는 경우");
+    res.status(401).json({ message: "로그인이 필요해요." });
+    return;
+  }
+
+  // 유효한 토큰인지 검증
+  let userId;
+  try {
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    userId = payload.id;
+  } catch (error) {
+    console.log("정상적인 토큰이 아님, 재로그인 필요");
+    res.status(401).json({ message: "로그인을 다시 시도해주세요." });
+    return;
+  }
+
+  try {
+    const connection = await db.getConnection();
+    const sql = "INSERT INTO chatting_rooms (name, created_by) VALUES (?,?);";
+    const [result] = await connection.query(sql, [name, userId]);
+
+    connection.release();
+
+    if (result.affectedRows > 0) {
+      res.status(201).json({
+        chattingRoom: {
+          id: result.insertId,
+          name,
+          createdBy: {
+            userId,
+          },
+        },
+      });
+    } else {
+      res.status(500).json({ message: "다시 시도해주세요." });
+    }
+  } catch (error) {
+    console.log(error);
+    connection.release();
+    res.status(500).json({ message: error.message });
+  }
+});
+
 // server start
 app.listen(port, () => {
   console.log("서버가 3001번 포트에서 실행중");
