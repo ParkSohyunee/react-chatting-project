@@ -4,10 +4,11 @@ import { useRouter } from "next/navigation";
 import { FormEvent } from "react";
 import { AxiosError } from "axios";
 
-import { axiosInstance, loginUser } from "@/app/api/auth";
+import { loginUser } from "@/app/api/auth";
 import useForm from "../hooks/useForm";
 import TextField from "../TextField";
 import CustomButton from "../CustomButton";
+import { axiosInstance } from "@/app/api/axios";
 
 export default function Login() {
   const router = useRouter();
