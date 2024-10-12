@@ -37,7 +37,7 @@ app.post("/api/login", async (req, res) => {
             expiresIn: process.env.JWT_EXPIRES_IN,
           });
           res.status(200).json({
-            id: result[0].id,
+            userId: result[0].id,
             accessToken: token,
           });
         } catch (error) {

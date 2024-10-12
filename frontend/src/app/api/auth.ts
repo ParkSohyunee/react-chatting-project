@@ -1,21 +1,30 @@
 import axios from "axios";
 
-interface FormData {
+type FormData = {
   name: string;
   password: string;
-}
+};
 
-const axiosInstance = axios.create({
+export const axiosInstance = axios.create({
   baseURL: `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api`,
 });
 
+type ResponseUser = {
+  userId: number;
+  accessToken: string;
+  message: string;
+};
+
 async function createUser(user: FormData) {
-  const response = await axiosInstance.post("/signup", user);
+  const response = await axiosInstance.post<Omit<ResponseUser, "accessToken">>(
+    "/signup",
+    user
+  );
   return response;
 }
 
 async function loginUser(user: FormData) {
-  const response = await axiosInstance.post("/login", user);
+  const response = await axiosInstance.post<ResponseUser>("/login", user);
   return response;
 }
 

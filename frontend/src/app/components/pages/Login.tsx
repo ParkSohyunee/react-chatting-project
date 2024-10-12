@@ -1,14 +1,16 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { FormEvent } from "react";
 import { AxiosError } from "axios";
 
-import { loginUser } from "@/app/api/auth";
+import { axiosInstance, loginUser } from "@/app/api/auth";
 import useForm from "../hooks/useForm";
 import TextField from "../TextField";
 import CustomButton from "../CustomButton";
 
 export default function Login() {
+  const router = useRouter();
   const { values, getTextFieldInputProps } = useForm({
     initialState: {
       name: "",
@@ -29,7 +31,10 @@ export default function Login() {
       console.log("로그인 결과: ", response);
 
       if (response.status === 200) {
-        // 로그인하면 채팅방 목록 페이지로 이동
+        axiosInstance.defaults.headers.common["Authorization"] =
+          response.data.accessToken;
+
+        router.push("/chattings");
       } else {
         alert(response.data.message);
       }
