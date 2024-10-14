@@ -105,21 +105,13 @@ app.post("/api/chattings", async (req, res) => {
 
   try {
     const connection = await db.getConnection();
-    const sql = "INSERT INTO chatting_rooms (name, created_by) VALUES (?,?);";
+    const sql = "INSERT INTO chatting_rooms (name, user_id) VALUES (?,?);";
     const [result] = await connection.query(sql, [name, userId]);
 
     connection.release();
 
     if (result.affectedRows > 0) {
-      res.status(201).json({
-        chattingRoom: {
-          id: result.insertId,
-          name,
-          createdBy: {
-            userId,
-          },
-        },
-      });
+      res.status(201).json({ result: null });
     } else {
       res.status(500).json({ message: "다시 시도해주세요." });
     }
