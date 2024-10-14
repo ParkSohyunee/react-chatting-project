@@ -4,7 +4,7 @@ const getChattingRooms = async () => {
   const connection = await db.getConnection();
 
   try {
-    const sql = "SELECT * FROM chatting_rooms WHERE room_status = 'ACTIVE';";
+    const sql = "SELECT * FROM chatting_rooms WHERE roomStatus = 'ACTIVE';";
     const [result] = await connection.query(sql);
     return result;
   } catch (error) {
@@ -19,7 +19,7 @@ const createChattingRoom = async (name, userId) => {
   const connection = await db.getConnection();
 
   try {
-    const sql = "INSERT INTO chatting_rooms (name, user_id) VALUES (?,?);";
+    const sql = "INSERT INTO chatting_rooms (name, userId) VALUES (?,?);";
     const [result] = await connection.query(sql, [name, userId]);
 
     if (result.affectedRows > 0) {
@@ -40,7 +40,7 @@ const isQwner = async ({ roomId, userId }) => {
 
   try {
     const sql =
-      "SELECT user_id FROM chatting_rooms WHERE id = (?) AND room_status = 'ACTIVE';";
+      "SELECT userId FROM chatting_rooms WHERE id = (?) AND roomStatus = 'ACTIVE';";
     const [response] = await connection.query(sql, [roomId]);
 
     if (response[0]["user_id"] !== userId) {
@@ -83,7 +83,7 @@ const deleteChattingRoom = async ({ roomId }) => {
 
   try {
     const sql =
-      "UPDATE chatting_rooms SET room_status = 'INACTIVE' WHERE id = (?);";
+      "UPDATE chatting_rooms SET roomStatus = 'INACTIVE' WHERE id = (?);";
     const [result] = await connection.query(sql, [roomId]);
 
     if (result.affectedRows > 0) {
