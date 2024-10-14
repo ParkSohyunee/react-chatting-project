@@ -10,5 +10,10 @@ router.patch(
   authenticateUser,
   chattingRoomController.updateChattingRoom
 );
+router.delete(
+  "/:roomId",
+  authenticateUser,
+  chattingRoomController.deleteChattingRoom
+);
 
 module.exports = router;

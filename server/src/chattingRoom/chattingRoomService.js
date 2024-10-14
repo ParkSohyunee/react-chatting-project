@@ -51,7 +51,7 @@ const isQwner = async ({ roomId, userId }) => {
     }
     return null;
   } catch (error) {
-    console.log(error);
+    // 사용자를 찾을 수 없을 경우 (response: [])
     throw new Error(error);
   } finally {
     connection.release();
@@ -78,7 +78,29 @@ const updateChattingRoom = async ({ name, roomId }) => {
   }
 };
 
+const deleteChattingRoom = async ({ roomId }) => {
+  const connection = await db.getConnection();
+
+  try {
+    const sql =
+      "UPDATE chatting_rooms SET room_status = 'INACTIVE' WHERE id = (?);";
+    const [result] = await connection.query(sql, [roomId]);
+
+    if (result.affectedRows > 0) {
+      return result;
+    } else {
+      throw new Error("다시 시도해주세요.");
+    }
+  } catch (error) {
+    console.log(error);
+    throw new Error(error);
+  } finally {
+    connection.release();
+  }
+};
+
 exports.getChattingRooms = getChattingRooms;
 exports.createChattingRoom = createChattingRoom;
 exports.updateChattingRoom = updateChattingRoom;
+exports.deleteChattingRoom = deleteChattingRoom;
 exports.isOwner = isQwner;
