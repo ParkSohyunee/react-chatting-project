@@ -1,21 +1,17 @@
 import { axiosInstance } from "./axios";
 
-type ResponseChatting = {
-  chattingRoom: {
-    id: number;
-    name: string;
-    createdBy: {
-      userId: number;
-    };
-  };
-};
+interface ResponseChatting<T> {
+  result: T;
+}
 
-async function createChattingRoom(value: { name: string }) {
-  const response = await axiosInstance.post<ResponseChatting>(
+async function createChattingRoom<T>(value: {
+  name: string;
+}): Promise<ResponseChatting<T>> {
+  const response = await axiosInstance.post<ResponseChatting<T>>(
     "/chattings",
     value
   );
-  return response;
+  return response.data;
 }
 
 export { createChattingRoom };

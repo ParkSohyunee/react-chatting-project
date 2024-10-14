@@ -19,8 +19,8 @@ export default function Chattings() {
     }
 
     try {
-      const result = await createChattingRoom(values);
-      console.log(result);
+      const response = await createChattingRoom(values);
+      console.log(response.result); // null
     } catch (error) {
       if (error instanceof AxiosError) {
         console.log(error.response?.data.message);
