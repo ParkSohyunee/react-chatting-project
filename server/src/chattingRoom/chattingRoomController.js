@@ -1,6 +1,16 @@
 const chattingRoomService = require("./chattingRoomService");
 const jwt = require("jsonwebtoken");
 
+const getChattingRooms = async (_, res) => {
+  try {
+    const response = await chattingRoomService.getChattingRooms();
+    return res.status(200).json({ result: response });
+  } catch (error) {
+    console.error("controllerError: ", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
 const createChattingRoom = async (req, res) => {
   const { name } = req.body;
 
@@ -33,4 +43,5 @@ const createChattingRoom = async (req, res) => {
   }
 };
 
-module.exports = createChattingRoom;
+exports.getChattingRooms = getChattingRooms;
+exports.createChattingRoom = createChattingRoom;

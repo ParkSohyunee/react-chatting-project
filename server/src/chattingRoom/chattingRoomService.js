@@ -1,6 +1,21 @@
 const db = require("../config/db");
 
-exports.createChattingRoom = async (name, userId) => {
+const getChattingRooms = async () => {
+  const connection = await db.getConnection();
+
+  try {
+    const sql = "SELECT * FROM chatting_rooms WHERE room_status = 'ACTIVE';";
+    const [result] = await connection.query(sql);
+    return result;
+  } catch (error) {
+    console.log(error);
+    throw new Error(error);
+  } finally {
+    connection.release();
+  }
+};
+
+const createChattingRoom = async (name, userId) => {
   const connection = await db.getConnection();
 
   try {
@@ -19,3 +34,6 @@ exports.createChattingRoom = async (name, userId) => {
     connection.release();
   }
 };
+
+exports.getChattingRooms = getChattingRooms;
+exports.createChattingRoom = createChattingRoom;
