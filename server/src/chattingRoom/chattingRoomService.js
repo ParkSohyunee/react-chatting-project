@@ -35,5 +35,50 @@ const createChattingRoom = async (name, userId) => {
   }
 };
 
+const isQwner = async ({ roomId, userId }) => {
+  const connection = await db.getConnection();
+
+  try {
+    const sql =
+      "SELECT user_id FROM chatting_rooms WHERE id = (?) AND room_status = 'ACTIVE';";
+    const [response] = await connection.query(sql, [roomId]);
+
+    if (response[0]["user_id"] !== userId) {
+      return {
+        errorCode: "NOT_PERMISSION",
+        message: "권한이 없는 사용자입니다.",
+      };
+    }
+    return null;
+  } catch (error) {
+    console.log(error);
+    throw new Error(error);
+  } finally {
+    connection.release();
+  }
+};
+
+const updateChattingRoom = async ({ name, roomId }) => {
+  const connection = await db.getConnection();
+
+  try {
+    const sql = "UPDATE chatting_rooms SET name = (?) WHERE id = (?);";
+    const [result] = await connection.query(sql, [name, roomId]);
+
+    if (result.affectedRows > 0) {
+      return result[0];
+    } else {
+      throw new Error("다시 시도해주세요.");
+    }
+  } catch (error) {
+    console.log(error);
+    throw new Error(error);
+  } finally {
+    connection.release();
+  }
+};
+
 exports.getChattingRooms = getChattingRooms;
 exports.createChattingRoom = createChattingRoom;
+exports.updateChattingRoom = updateChattingRoom;
+exports.isOwner = isQwner;
