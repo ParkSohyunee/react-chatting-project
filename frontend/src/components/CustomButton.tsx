@@ -16,7 +16,7 @@ export default function CustomButton({
     <button
       type={type}
       onClick={onClick}
-      className="p-1 mt-4 rounded-md bg-amber-100 outline-none"
+      className="px-4 py-2 text-sm font-semibold rounded-md bg-amber-200 outline-none hover:bg-amber-100"
     >
       {children}
     </button>
