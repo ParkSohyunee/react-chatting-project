@@ -10,11 +10,7 @@ interface ChattingRowProps {
   onClickDelete: (roomId: number) => void;
 }
 
-export default function ChattingRow({
-  room,
-  onClickEdit,
-  onClickDelete,
-}: ChattingRowProps) {
+export default function ChattingRow({ room, onClickEdit, onClickDelete }: ChattingRowProps) {
   const { id, name, createdAt } = room;
 
   const handleClickEditButton = (e: MouseEvent<HTMLButtonElement>) => {

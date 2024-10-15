@@ -7,11 +7,7 @@ interface CustomButtonProps {
 }
 
 // TODO size, inValid 상태에 따른 스타일 적용
-export default function CustomButton({
-  children,
-  type = "button",
-  onClick,
-}: CustomButtonProps) {
+export default function CustomButton({ children, type = "button", onClick }: CustomButtonProps) {
   return (
     <button
       type={type}

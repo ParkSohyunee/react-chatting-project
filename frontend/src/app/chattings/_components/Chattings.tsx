@@ -28,11 +28,7 @@ export interface ChattingRoom {
 export default function Chattings() {
   const [chattingList, setChattingList] = useState<ChattingRoom[]>();
   const { value: isOpen, handleActive, handleInActive } = useToggle();
-  const {
-    value: isEdit,
-    handleActive: handleOnEdit,
-    handleInActive: handleOffEdit,
-  } = useToggle();
+  const { value: isEdit, handleActive: handleOnEdit, handleInActive: handleOffEdit } = useToggle();
   const [selected, setSelected] = useState<unknown>();
   const { values, getTextFieldInputProps } = useForm({
     initialState: { name: "" },

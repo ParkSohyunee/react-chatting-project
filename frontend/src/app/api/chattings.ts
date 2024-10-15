@@ -9,13 +9,8 @@ async function getChattingRooms<T>(): Promise<ResponseChatting<T>> {
   return response.data;
 }
 
-async function createChattingRoom<T>(value: {
-  name: string;
-}): Promise<ResponseChatting<T>> {
-  const response = await axiosInstance.post<ResponseChatting<T>>(
-    "/chattings",
-    value
-  );
+async function createChattingRoom<T>(value: { name: string }): Promise<ResponseChatting<T>> {
+  const response = await axiosInstance.post<ResponseChatting<T>>("/chattings", value);
   return response.data;
 }
 
@@ -25,25 +20,13 @@ async function updateChattingRoom<T>(
     name: string;
   }
 ): Promise<ResponseChatting<T>> {
-  const response = await axiosInstance.patch<ResponseChatting<T>>(
-    `/chattings/${roomId}`,
-    value
-  );
+  const response = await axiosInstance.patch<ResponseChatting<T>>(`/chattings/${roomId}`, value);
   return response.data;
 }
 
-async function deleteChattingRoom<T>(
-  roomId: number
-): Promise<ResponseChatting<T>> {
-  const response = await axiosInstance.delete<ResponseChatting<T>>(
-    `/chattings/${roomId}`
-  );
+async function deleteChattingRoom<T>(roomId: number): Promise<ResponseChatting<T>> {
+  const response = await axiosInstance.delete<ResponseChatting<T>>(`/chattings/${roomId}`);
   return response.data;
 }
 
-export {
-  getChattingRooms,
-  createChattingRoom,
-  updateChattingRoom,
-  deleteChattingRoom,
-};
+export { getChattingRooms, createChattingRoom, updateChattingRoom, deleteChattingRoom };
