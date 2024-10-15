@@ -10,10 +10,10 @@ import {
   updateChattingRoom,
 } from "@/app/api/chattings";
 
-import CustomButton from "../../../components/CustomButton";
-import TopSheet from "../../../components/TopSheet";
-import useForm from "../../../components/hooks/useForm";
-import TextField from "../../../components/TextField";
+import CustomButton from "@/components/CustomButton";
+import TopSheet from "@/components/TopSheet";
+import useForm from "@/components/hooks/useForm";
+import TextField from "@/components/TextField";
 import ChattingRow from "./ChattingRow";
 
 export interface ChattingRoom {

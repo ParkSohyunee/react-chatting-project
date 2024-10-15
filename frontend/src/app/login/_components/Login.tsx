@@ -5,9 +5,9 @@ import { FormEvent } from "react";
 import { AxiosError } from "axios";
 
 import { loginUser } from "@/app/api/auth";
-import useForm from "../../../components/hooks/useForm";
-import TextField from "../../../components/TextField";
-import CustomButton from "../../../components/CustomButton";
+import useForm from "@/components/hooks/useForm";
+import TextField from "@/components/TextField";
+import CustomButton from "@/components/CustomButton";
 import { axiosInstance } from "@/app/api/axios";
 
 export default function Login() {
