@@ -7,13 +7,13 @@ interface TextFieldProps extends InputHTMLAttributes<HTMLInputElement> {
 
 export default function TextField({ label, field, ...props }: TextFieldProps) {
   return (
-    <div className="flex gap-4 items-center">
-      <label htmlFor={field} className="w-20">
+    <div className="mt-4 flex gap-4 items-center">
+      <label htmlFor={field} className="w-24 font-semibold text-lg text-center">
         {label}
       </label>
       <input
         autoComplete="off"
-        className="px-2 py-1 border rounded-md w-60 outline-none"
+        className="w-full px-2 py-1 border rounded-md outline-none text-slate-800 text-lg placeholder:text-sm"
         {...props}
       />
     </div>
