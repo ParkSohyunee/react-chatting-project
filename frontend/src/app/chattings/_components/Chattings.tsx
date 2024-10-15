@@ -7,10 +7,10 @@ import { AxiosError } from "axios";
 import { createChattingRoom, getChattingRooms } from "@/app/api/chattings";
 import convertFormatDatetime from "@/libs/utils/convertFormatDatetime";
 
-import CustomButton from "../CustomButton";
-import TopSheet from "../TopSheet";
-import useForm from "../hooks/useForm";
-import TextField from "../TextField";
+import CustomButton from "../../../components/CustomButton";
+import TopSheet from "../../../components/TopSheet";
+import useForm from "../../../components/hooks/useForm";
+import TextField from "../../../components/TextField";
 
 interface ChattingRoom {
   id: number;
