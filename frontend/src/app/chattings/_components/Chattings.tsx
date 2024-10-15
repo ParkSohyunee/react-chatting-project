@@ -1,18 +1,22 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AxiosError } from "axios";
 
-import { createChattingRoom, getChattingRooms } from "@/app/api/chattings";
-import convertFormatDatetime from "@/libs/utils/convertFormatDatetime";
+import {
+  createChattingRoom,
+  deleteChattingRoom,
+  getChattingRooms,
+  updateChattingRoom,
+} from "@/app/api/chattings";
 
 import CustomButton from "../../../components/CustomButton";
 import TopSheet from "../../../components/TopSheet";
 import useForm from "../../../components/hooks/useForm";
 import TextField from "../../../components/TextField";
+import ChattingRow from "./ChattingRow";
 
-interface ChattingRoom {
+export interface ChattingRoom {
   id: number;
   name: string;
   userId: number;
@@ -20,38 +24,16 @@ interface ChattingRoom {
   roomStatus: "active" | "inactive";
 }
 
-interface ChattingRowProps {
-  room: ChattingRoom;
-}
-
-function ChattingRow({ room }: ChattingRowProps) {
-  const { id, name, createdAt } = room;
-
-  return (
-    <Link
-      href={`/chattings/${id}`}
-      className="p-4 flex justify-between items-end hover:bg-gray-100 cursor-pointer"
-    >
-      <div className="flex gap-4">
-        <div className="w-14 h-14 rounded-3xl bg-slate-400"></div>
-        <div>
-          <h2 className="text-slate-700 text-base font-medium">{name}</h2>
-        </div>
-      </div>
-      <div className="text-slate-400 text-sm">
-        개설일 {convertFormatDatetime(createdAt)}
-      </div>
-    </Link>
-  );
-}
-
 export default function Chattings() {
   const [chattingList, setChattingList] = useState<ChattingRoom[]>();
   const [isOpen, setIsOpen] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+  const [selected, setSelected] = useState<unknown>();
   const { values, getTextFieldInputProps } = useForm({
     initialState: { name: "" },
   });
 
+  // 채팅방 조회
   const fetchChattingRooms = async () => {
     try {
       const response = await getChattingRooms<ChattingRoom[]>();
@@ -63,6 +45,7 @@ export default function Chattings() {
     }
   };
 
+  // 채팅방 만들기
   const handleCreateRoom = async () => {
     if (!values.name.trim()) {
       alert("채팅방 이름을 입력해주세요.");
@@ -75,9 +58,46 @@ export default function Chattings() {
       setIsOpen(false);
     } catch (error) {
       if (error instanceof AxiosError) {
-        console.log(error.response?.data.message);
+        alert(error.response?.data.message);
       }
     }
+  };
+
+  // 채팅방 수정하기
+  const handleUpdateRoom = (roomId: unknown) => async () => {
+    if (!values.name.trim()) {
+      alert("채팅방 이름을 입력해주세요.");
+      return;
+    }
+
+    try {
+      await updateChattingRoom(roomId as number, values);
+      setIsEdit(false);
+      setIsOpen(false);
+      fetchChattingRooms();
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        alert(error.response?.data.message);
+      }
+    }
+  };
+
+  // 채팅방 삭제하기
+  const handleDeleteRoom = async (roomId: number) => {
+    try {
+      await deleteChattingRoom(roomId);
+      fetchChattingRooms();
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        alert(error.response?.data.message);
+      }
+    }
+  };
+
+  const handleOnClickEdit = (roomId: number) => {
+    setIsEdit(true);
+    setIsOpen(true);
+    setSelected(roomId);
   };
 
   useEffect(() => {
@@ -94,7 +114,12 @@ export default function Chattings() {
       </div>
       <div>
         {chattingList?.map((room) => (
-          <ChattingRow key={room.id} room={room} />
+          <ChattingRow
+            key={room.id}
+            room={room}
+            onClickEdit={handleOnClickEdit}
+            onClickDelete={handleDeleteRoom}
+          />
         ))}
       </div>
       <div></div>
@@ -110,8 +135,11 @@ export default function Chattings() {
               autoFocus
               {...getTextFieldInputProps("name")}
             />
-            <CustomButton type="button" onClick={handleCreateRoom}>
-              만들기
+            <CustomButton
+              type="button"
+              onClick={isEdit ? handleUpdateRoom(selected) : handleCreateRoom}
+            >
+              {isEdit ? "수정하기" : "만들기"}
             </CustomButton>
           </div>
         </TopSheet>

@@ -43,7 +43,7 @@ const isQwner = async ({ roomId, userId }) => {
       "SELECT userId FROM chatting_rooms WHERE id = (?) AND roomStatus = 'ACTIVE';";
     const [response] = await connection.query(sql, [roomId]);
 
-    if (response[0]["user_id"] !== userId) {
+    if (response[0]["userId"] !== userId) {
       return {
         errorCode: "NOT_PERMISSION",
         message: "권한이 없는 사용자입니다.",
