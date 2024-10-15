@@ -15,6 +15,7 @@ import TopSheet from "@/components/TopSheet";
 import useForm from "@/components/hooks/useForm";
 import TextField from "@/components/TextField";
 import ChattingRow from "./ChattingRow";
+import useToggle from "@/components/hooks/useToggle";
 
 export interface ChattingRoom {
   id: number;
@@ -26,8 +27,12 @@ export interface ChattingRoom {
 
 export default function Chattings() {
   const [chattingList, setChattingList] = useState<ChattingRoom[]>();
-  const [isOpen, setIsOpen] = useState(false);
-  const [isEdit, setIsEdit] = useState(false);
+  const { value: isOpen, handleActive, handleInActive } = useToggle();
+  const {
+    value: isEdit,
+    handleActive: handleOnEdit,
+    handleInActive: handleOffEdit,
+  } = useToggle();
   const [selected, setSelected] = useState<unknown>();
   const { values, getTextFieldInputProps } = useForm({
     initialState: { name: "" },
@@ -55,7 +60,7 @@ export default function Chattings() {
     try {
       await createChattingRoom(values);
       fetchChattingRooms();
-      setIsOpen(false);
+      handleInActive();
     } catch (error) {
       if (error instanceof AxiosError) {
         alert(error.response?.data.message);
@@ -72,8 +77,8 @@ export default function Chattings() {
 
     try {
       await updateChattingRoom(roomId as number, values);
-      setIsEdit(false);
-      setIsOpen(false);
+      handleOffEdit();
+      handleInActive();
       fetchChattingRooms();
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -95,8 +100,8 @@ export default function Chattings() {
   };
 
   const handleOnClickEdit = (roomId: number) => {
-    setIsEdit(true);
-    setIsOpen(true);
+    handleOnEdit();
+    handleActive();
     setSelected(roomId);
   };
 
@@ -108,7 +113,7 @@ export default function Chattings() {
     <section className="relative p-4 w-full h-screen">
       <div className="flex justify-between items-center mb-3">
         <h1 className="px-4 py-2 text-2xl text-slate-800 font-bold">💬 채팅</h1>
-        <CustomButton type="button" onClick={() => setIsOpen(true)}>
+        <CustomButton type="button" onClick={handleActive}>
           + 채팅방 만들기
         </CustomButton>
       </div>
@@ -122,9 +127,13 @@ export default function Chattings() {
           />
         ))}
       </div>
-      <div></div>
       {isOpen && (
-        <TopSheet onClose={() => setIsOpen(false)}>
+        <TopSheet
+          onClose={() => {
+            handleInActive();
+            handleOffEdit();
+          }}
+        >
           <div className="flex flex-col gap-4 h-full justify-evenly">
             <TextField
               label="채팅방명"
