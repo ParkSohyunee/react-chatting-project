@@ -5,6 +5,7 @@ import { AxiosError } from "axios";
 
 import useForm from "../hooks/useForm";
 import { getChattingRooms, createChattingRoom } from "@/app/api/chattings";
+import convertFormatDatetime from "@/libs/utils/convertFormatDatetime";
 
 import CustomButton from "../CustomButton";
 import TextField from "../TextField";
@@ -66,7 +67,7 @@ export default function Chattings() {
         {chattingList?.map((chat) => (
           <div
             key={chat.id}
-            className="p-4 flex justify-between hover:bg-gray-100 cursor-pointer"
+            className="p-4 flex justify-between items-end hover:bg-gray-100 cursor-pointer"
           >
             <div className="flex gap-4">
               <div className="w-14 h-14 rounded-3xl bg-slate-400"></div>
@@ -76,7 +77,9 @@ export default function Chattings() {
                 </h2>
               </div>
             </div>
-            <div>개설일 {chat.createdAt}</div>
+            <div className="text-slate-400 text-sm">
+              개설일 {convertFormatDatetime(chat.createdAt)}
+            </div>
           </div>
         ))}
       </div>
