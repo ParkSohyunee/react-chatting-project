@@ -1,13 +1,9 @@
-import axios from "axios";
+import { axiosInstance } from "./axios";
 
 type FormData = {
   name: string;
   password: string;
 };
-
-export const axiosInstance = axios.create({
-  baseURL: `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api`,
-});
 
 type ResponseUser = {
   userId: number;

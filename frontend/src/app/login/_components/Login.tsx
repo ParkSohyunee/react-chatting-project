@@ -4,10 +4,11 @@ import { useRouter } from "next/navigation";
 import { FormEvent } from "react";
 import { AxiosError } from "axios";
 
-import { axiosInstance, loginUser } from "@/app/api/auth";
-import useForm from "../hooks/useForm";
-import TextField from "../TextField";
-import CustomButton from "../CustomButton";
+import { loginUser } from "@/app/api/auth";
+import useForm from "@/components/hooks/useForm";
+import TextField from "@/components/TextField";
+import CustomButton from "@/components/CustomButton";
+import { axiosInstance } from "@/app/api/axios";
 
 export default function Login() {
   const router = useRouter();
@@ -31,8 +32,9 @@ export default function Login() {
       console.log("로그인 결과: ", response);
 
       if (response.status === 200) {
-        axiosInstance.defaults.headers.common["Authorization"] =
-          response.data.accessToken;
+        axiosInstance.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${response.data.accessToken}`;
 
         router.push("/chattings");
       } else {
@@ -65,7 +67,7 @@ export default function Login() {
           maxLength={20}
           {...getTextFieldInputProps("password")}
         />
-        <CustomButton text="로그인" type="submit" />
+        <CustomButton type="submit">로그인</CustomButton>
       </form>
     </section>
   );

@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { FormEvent } from "react";
 import { AxiosError } from "axios";
 
-import { createUser } from "../../api/auth";
+import { createUser } from "../../app/api/auth";
 import useForm from "../hooks/useForm";
 import TextField from "../TextField";
 import CustomButton from "../CustomButton";
@@ -63,7 +63,7 @@ export default function Signup() {
           maxLength={20}
           {...getTextFieldInputProps("password")}
         />
-        <CustomButton text="회원가입" type="submit" />
+        <CustomButton type="submit">회원가입</CustomButton>
       </form>
     </section>
   );

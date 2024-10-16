@@ -6,12 +6,17 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
+const chattingRouter = require("./chattingRoom/routes");
+
 const app = express();
 
 // middleware
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// routing
+app.use("/api/chattings", chattingRouter);
 
 const port = 3001;
 
