@@ -2,7 +2,7 @@ import { InputHTMLAttributes } from "react";
 
 interface TextFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
-  field: "name" | "password";
+  field: "name" | "password" | "message";
 }
 
 export default function TextField({ label, field, ...props }: TextFieldProps) {
