@@ -8,7 +8,6 @@ import { loginUser } from "@/app/api/auth";
 import useForm from "@/components/hooks/useForm";
 import TextField from "@/components/TextField";
 import CustomButton from "@/components/CustomButton";
-import { axiosInstance } from "@/app/api/axios";
 
 export default function Login() {
   const router = useRouter();
@@ -29,13 +28,8 @@ export default function Login() {
 
     try {
       const response = await loginUser(values);
-      console.log("로그인 결과: ", response);
-
       if (response.status === 200) {
-        axiosInstance.defaults.headers.common[
-          "Authorization"
-        ] = `Bearer ${response.data.accessToken}`;
-
+        localStorage.setItem("accessToken", response.data.accessToken);
         router.push("/chattings");
       } else {
         alert(response.data.message);
