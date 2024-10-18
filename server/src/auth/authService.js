@@ -15,7 +15,7 @@ const createUser = async (name, password) => {
     if (result.affectedRows > 0) {
       return result;
     } else {
-      throw new Error("회원가입 다시 시도해주세요.");
+      throw new Error();
     }
   } catch (error) {
     console.log(error);
@@ -43,7 +43,7 @@ const loginUser = async (name, password) => {
   const connection = await db.getConnection();
 
   try {
-    const sql = "SELECT * FROM users WHERE name = (?)";
+    const sql = "SELECT * FROM users WHERE name = (?);";
     const [result] = await connection.query(sql, [name]);
 
     if (result.length > 0) {

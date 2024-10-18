@@ -4,10 +4,11 @@ import { useRouter } from "next/navigation";
 import { FormEvent } from "react";
 import { AxiosError } from "axios";
 
-import { createUser } from "../../app/api/auth";
-import useForm from "../hooks/useForm";
-import TextField from "../TextField";
-import CustomButton from "../CustomButton";
+import { createUser } from "@/app/api/auth";
+import useForm from "@/components/hooks/useForm";
+import TextField from "@/components/TextField";
+import CustomButton from "@/components/CustomButton";
+import { SIGNUP_ERROR_MESSAGE, SignUpErrorType } from "@/libs/constants/messages";
 
 export default function Signup() {
   const router = useRouter();
@@ -33,12 +34,11 @@ export default function Signup() {
       if (response.status === 200) {
         alert("회원가입 성공! 로그인 해주세요.");
         router.push("/login");
-      } else {
-        alert(response.data.message);
       }
     } catch (error) {
       if (error instanceof AxiosError) {
-        alert(error.response?.data.message);
+        const errorCode: SignUpErrorType = error.response?.data.errorCode;
+        alert(SIGNUP_ERROR_MESSAGE[errorCode]);
       }
     }
   };

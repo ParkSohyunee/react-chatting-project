@@ -7,7 +7,7 @@ const createUserController = async (req, res) => {
     const result = await authService.createUser(name, password);
     res.status(200).json({ userId: result.insertId });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ errorCode: "ERROR_SIGNUP" });
   }
 };
 
