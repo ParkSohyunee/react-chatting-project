@@ -28,8 +28,6 @@ const createUser = async (name, password) => {
 // 닉네임과 비밀번호 일치 검증
 const validatePassword = async (inputValue, findValue) => {
   const isCorrect = await bcrypt.compare(inputValue, findValue);
-  console.log(`isCorrect: `, isCorrect);
-
   return isCorrect;
 };
 
@@ -53,8 +51,6 @@ const loginUser = async (name, password) => {
         password,
         result[0].password
       );
-      console.log(`isValidate: `, isValidatePassword);
-
       if (isValidatePassword) {
         try {
           const token = getAccessToken(result[0].id);
@@ -63,22 +59,13 @@ const loginUser = async (name, password) => {
             accessToken: token,
           };
         } catch (error) {
-          return {
-            errorCode: "ERROR_LOGIN",
-            message: "로그인을 다시 시도해주세요.",
-          };
+          return { errorCode: "ERROR_LOGIN" };
         }
       } else {
-        return {
-          errorCode: "CHECK_PASSWORD",
-          message: "비밀번호를 확인해주세요.",
-        };
+        return { errorCode: "CHECK_PASSWORD" };
       }
     } else {
-      return {
-        errorCode: "CHECK_NICKNAME",
-        message: "닉네임을 확인해주세요.",
-      };
+      return { errorCode: "CHECK_NICKNAME" };
     }
   } catch (error) {
     console.log(error);

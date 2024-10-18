@@ -8,6 +8,7 @@ import { loginUser } from "@/app/api/auth";
 import useForm from "@/components/hooks/useForm";
 import TextField from "@/components/TextField";
 import CustomButton from "@/components/CustomButton";
+import { LOGIN_ERROR_MESSAGE, LoginErrorType } from "@/libs/constants/messages";
 
 export default function Login() {
   const router = useRouter();
@@ -31,12 +32,11 @@ export default function Login() {
       if (response.status === 200) {
         localStorage.setItem("accessToken", response.data.accessToken);
         router.push("/chattings");
-      } else {
-        alert(response.data.message);
       }
     } catch (error) {
       if (error instanceof AxiosError) {
-        alert(error.response?.data.message);
+        const errorCode: LoginErrorType = error.response?.data.errorCode;
+        alert(LOGIN_ERROR_MESSAGE[errorCode]);
       }
     }
   };
