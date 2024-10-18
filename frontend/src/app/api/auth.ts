@@ -13,14 +13,14 @@ type ResponseUser = {
 
 async function createUser(user: FormData) {
   const response = await axiosInstance.post<Omit<ResponseUser, "accessToken">>(
-    "/signup",
+    "/auth/signup",
     user
   );
   return response;
 }
 
 async function loginUser(user: FormData) {
-  const response = await axiosInstance.post<ResponseUser>("/login", user);
+  const response = await axiosInstance.post<ResponseUser>("/auth/login", user);
   return response;
 }
 
