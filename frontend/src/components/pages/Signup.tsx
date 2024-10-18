@@ -8,7 +8,8 @@ import { createUser } from "@/app/api/auth";
 import useForm from "@/components/hooks/useForm";
 import TextField from "@/components/TextField";
 import CustomButton from "@/components/CustomButton";
-import { SIGNUP_ERROR_MESSAGE, SignUpErrorType } from "@/libs/constants/messages";
+import { AUTH_ERROR_MESSAGE } from "@/libs/constants/messages";
+import { AUTH_CODE } from "@/libs/constants/errorCode";
 
 export default function Signup() {
   const router = useRouter();
@@ -37,8 +38,8 @@ export default function Signup() {
       }
     } catch (error) {
       if (error instanceof AxiosError) {
-        const errorCode: SignUpErrorType = error.response?.data.errorCode;
-        alert(SIGNUP_ERROR_MESSAGE[errorCode]);
+        const errorCode: keyof typeof AUTH_CODE = error.response?.data.errorCode;
+        alert(AUTH_ERROR_MESSAGE[errorCode]);
       }
     }
   };
