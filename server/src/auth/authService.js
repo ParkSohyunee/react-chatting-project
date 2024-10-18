@@ -25,6 +25,22 @@ const createUser = async (name, password) => {
   }
 };
 
+// 닉네임과 비밀번호 일치 검증
+const validatePassword = async (inputValue, findValue) => {
+  const isCorrect = await bcrypt.compare(inputValue, findValue);
+  console.log(`isCorrect: `, isCorrect);
+
+  return isCorrect;
+};
+
+// 토큰 생성
+const getAccessToken = (payload) => {
+  const accessToken = jwt.sign({ id: payload }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN,
+  });
+  return accessToken;
+};
+
 const loginUser = async (name, password) => {
   const connection = await db.getConnection();
 
@@ -33,15 +49,15 @@ const loginUser = async (name, password) => {
     const [result] = await connection.query(sql, [name]);
 
     if (result.length > 0) {
-      const isCorrectPassword = await bcrypt.compare(
+      const isValidatePassword = await validatePassword(
         password,
         result[0].password
       );
-      if (isCorrectPassword) {
+      console.log(`isValidate: `, isValidatePassword);
+
+      if (isValidatePassword) {
         try {
-          const token = jwt.sign({ id: result[0].id }, process.env.JWT_SECRET, {
-            expiresIn: process.env.JWT_EXPIRES_IN,
-          });
+          const token = getAccessToken(result[0].id);
           return {
             userId: result[0].id,
             accessToken: token,
