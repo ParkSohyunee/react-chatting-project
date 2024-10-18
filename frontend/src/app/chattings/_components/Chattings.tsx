@@ -59,6 +59,9 @@ export default function Chattings() {
       handleInActive();
     } catch (error) {
       if (error instanceof AxiosError) {
+        if (error.status === 401) {
+          localStorage.removeItem("accessToken");
+        }
         alert(error.response?.data.message);
       }
     }
@@ -78,6 +81,9 @@ export default function Chattings() {
       fetchChattingRooms();
     } catch (error) {
       if (error instanceof AxiosError) {
+        if (error.status === 401) {
+          localStorage.removeItem("accessToken");
+        }
         alert(error.response?.data.message);
       }
     }
@@ -90,6 +96,9 @@ export default function Chattings() {
       fetchChattingRooms();
     } catch (error) {
       if (error instanceof AxiosError) {
+        if (error.status === 401) {
+          localStorage.removeItem("accessToken");
+        }
         alert(error.response?.data.message);
       }
     }
