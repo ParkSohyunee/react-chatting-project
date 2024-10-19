@@ -1,8 +1,9 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
+
 import useForm from "@/components/hooks/useForm";
 import TextField from "@/components/TextField";
-import { useEffect, useRef, useState } from "react";
 
 export default function ChattingRoomPage() {
   const [messages, setMessages] = useState<string[]>([]);
@@ -22,16 +23,20 @@ export default function ChattingRoomPage() {
   };
 
   useEffect(() => {
-    // Create WebSocket connection
-    ws.current = new WebSocket(`${process.env.NEXT_PUBLIC_WEBSOCKET_URL}`);
+    const accessToken = localStorage.getItem("accessToken");
+
+    // 웹소켓 연결 및 토큰 전달
+    ws.current = new WebSocket(`${process.env.NEXT_PUBLIC_WEBSOCKET_URL}?token=${accessToken}`);
 
     // Connection opened
     ws.current.onopen = () => {
-      ws.current?.send("Connected to WS Server!");
+      console.log("Connected to WS Server!");
     };
 
+    // 토큰이 없거나 토큰이 유효하지 않은 경우 등
     ws.current.onerror = (error) => {
       console.log(error);
+      alert("로그인이 필요합니다.");
     };
 
     ws.current.onmessage = (event) => {
