@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 import useForm from "@/components/hooks/useForm";
 import TextField from "@/components/TextField";
+import CustomButton from "@/components/CustomButton";
 
 interface ChatType {
   type: "sender" | "receiver" | "system";
@@ -18,6 +19,18 @@ export default function ChattingRoomPage() {
       message: "",
     },
   });
+
+  const alignStyleVariant = {
+    system: "text-center",
+    sender: "text-right",
+    receiver: "text-left",
+  };
+
+  const bgStyleVariant = {
+    system: "bg-slate-200",
+    sender: "bg-amber-300",
+    receiver: "bg-white",
+  };
 
   const sendMessage = () => {
     // Broadcast the message to all connected clients
@@ -65,26 +78,37 @@ export default function ChattingRoomPage() {
   }, []);
 
   return (
-    <section>
-      채팅방 상세페이지
-      <TextField label="+" field="message" {...getTextFieldInputProps("message")} />
-      <button onClick={sendMessage}>메세지 보내기</button>
-      <ul id="chat">
+    <section className="bg-slate-100 h-screen flex flex-col">
+      <h1 className="p-4 text-lg font-semibold sticky top-0 w-full bg-slate-100">
+        채팅방 상세페이지
+      </h1>
+      <ul className="p-4 flex flex-col grow gap-4 overflow-y-auto box-border">
         {messages.map((data, index) => (
-          <li
-            className={
-              data.type === "system"
-                ? "text-center"
-                : data.type === "sender"
-                ? "text-right"
-                : "text-left"
-            }
-            key={index}
-          >
-            {data.message}
+          <li className={`${alignStyleVariant[data.type]}`} key={index}>
+            <span
+              className={`
+                text-sm text-slate-800 px-3 py-2 rounded-2xl 
+                ${bgStyleVariant[data.type]}
+                `}
+            >
+              {data.message}
+            </span>
           </li>
         ))}
       </ul>
+      <div className="flex sticky bottom-0 w-full bg-white justify-between items-center p-6 gap-2">
+        <div className="grow">
+          <TextField
+            label=""
+            field="message"
+            {...getTextFieldInputProps("message")}
+            placeholder="메세지를 입력해주세요.."
+          />
+        </div>
+        <div className="mt-4 text-end">
+          <CustomButton onClick={sendMessage}>보내기</CustomButton>
+        </div>
+      </div>
     </section>
   );
 }
