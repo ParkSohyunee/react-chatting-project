@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 
 import useForm from "@/components/hooks/useForm";
 import TextField from "@/components/TextField";
@@ -20,13 +20,15 @@ export default function ChattingRoomPage() {
   const [messages, setMessages] = useState<ChatType[]>([]);
   const ws = useRef<null | WebSocket>(null);
   const isMounted = useRef(true);
-  const { values, getTextFieldInputProps } = useForm({
+  const { values, setValues, getTextFieldInputProps } = useForm({
     initialState: {
       message: "",
     },
   });
 
-  const sendMessage = () => {
+  const sendMessage = (e: FormEvent) => {
+    e.preventDefault();
+
     // Broadcast the message to all connected clients
     // readyState - current state of the WebSocket connection
     if (ws.current?.readyState === WebSocket.OPEN) {
@@ -38,6 +40,7 @@ export default function ChattingRoomPage() {
       );
     }
     setMessages((prev) => [...prev, { type: "sender", message: values.message }]);
+    setValues({ message: "" });
   };
 
   useEffect(() => {
@@ -81,18 +84,22 @@ export default function ChattingRoomPage() {
           <Message key={index} data={data} />
         ))}
       </ul>
-      <div className="flex sticky bottom-0 w-full bg-white justify-between items-center p-6 gap-2">
+      <form
+        onSubmit={sendMessage}
+        className="flex sticky bottom-0 w-full bg-white justify-between items-center p-6 gap-2"
+      >
         <div className="grow">
           <TextField
             field="message"
             placeholder="메세지를 입력해주세요.."
+            value={values.message}
             {...getTextFieldInputProps("message")}
           />
         </div>
         <div className="mt-4 text-end">
-          <CustomButton onClick={sendMessage}>보내기</CustomButton>
+          <CustomButton type="submit">보내기</CustomButton>
         </div>
-      </div>
+      </form>
     </section>
   );
 }
