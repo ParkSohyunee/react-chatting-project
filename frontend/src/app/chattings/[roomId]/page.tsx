@@ -6,30 +6,36 @@ import useForm from "@/components/hooks/useForm";
 import TextField from "@/components/TextField";
 import CustomButton from "@/components/CustomButton";
 
+type RoleType = "sender" | "receiver" | "system";
+
 interface ChatType {
-  type: "sender" | "receiver" | "system";
+  type: RoleType;
   message: string;
 }
 
 export default function ChattingRoomPage() {
   const [messages, setMessages] = useState<ChatType[]>([]);
   const ws = useRef<null | WebSocket>(null);
+  const isMounted = useRef(true);
   const { values, getTextFieldInputProps } = useForm({
     initialState: {
       message: "",
     },
   });
 
-  const alignStyleVariant = {
-    system: "text-center",
-    sender: "text-right",
-    receiver: "text-left",
-  };
-
-  const bgStyleVariant = {
-    system: "bg-slate-200",
-    sender: "bg-amber-300",
-    receiver: "bg-white",
+  const chatStyleVariant = {
+    system: {
+      align: "text-center",
+      color: "bg-slate-200",
+    },
+    sender: {
+      align: "text-right",
+      color: "bg-amber-300",
+    },
+    receiver: {
+      align: "text-left",
+      color: "bg-white",
+    },
   };
 
   const sendMessage = () => {
@@ -60,7 +66,7 @@ export default function ChattingRoomPage() {
     // 토큰이 없거나 토큰이 유효하지 않은 경우 등
     ws.current.onerror = (error) => {
       console.log(error);
-      if (ws.current) {
+      if (isMounted.current) {
         alert("로그인이 필요합니다.");
       }
     };
@@ -72,6 +78,7 @@ export default function ChattingRoomPage() {
     return () => {
       if (ws.current) {
         console.log("websocket 연결 종료");
+        isMounted.current = false;
         ws.current.close();
       }
     };
@@ -84,11 +91,11 @@ export default function ChattingRoomPage() {
       </h1>
       <ul className="p-4 flex flex-col grow gap-4 overflow-y-auto box-border">
         {messages.map((data, index) => (
-          <li className={`${alignStyleVariant[data.type]}`} key={index}>
+          <li className={`${chatStyleVariant[data.type].align}`} key={index}>
             <span
               className={`
                 text-sm text-slate-800 px-3 py-2 rounded-2xl 
-                ${bgStyleVariant[data.type]}
+                ${chatStyleVariant[data.type].color}
                 `}
             >
               {data.message}
