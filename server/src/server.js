@@ -72,7 +72,12 @@ ws.on("connection", async (ws, req) => {
     sockets = sockets.filter((socket) => socket.id !== ws.id);
     sockets.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
-        client.send(`${userName}님이 나갔습니다.`);
+        client.send(
+          JSON.stringify({
+            type: "system",
+            message: `${userName}님이 나갔습니다.`,
+          })
+        );
       }
     });
   });
@@ -85,15 +90,25 @@ ws.on("connection", async (ws, req) => {
   // Broadcast the message to all connected clients
   sockets.forEach((client) => {
     if (client.readyState === WebSocket.OPEN) {
-      client.send(`${userName}님이 참여했습니다.`);
+      client.send(
+        JSON.stringify({
+          type: "system",
+          message: `${userName}님이 참여했습니다.`,
+        })
+      );
     }
   });
 
   // reply
   ws.on("message", (message) => {
     sockets.forEach((client) => {
-      if (client.readyState === WebSocket.OPEN) {
-        client.send(message.toString());
+      if (client !== ws && client.readyState === WebSocket.OPEN) {
+        client.send(
+          JSON.stringify({
+            type: "receiver",
+            message: JSON.parse(message).message,
+          })
+        );
       }
     });
   });
