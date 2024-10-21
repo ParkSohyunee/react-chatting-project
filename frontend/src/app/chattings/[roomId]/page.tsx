@@ -5,10 +5,13 @@ import { useEffect, useRef, useState } from "react";
 import useForm from "@/components/hooks/useForm";
 import TextField from "@/components/TextField";
 import CustomButton from "@/components/CustomButton";
+import Message from "./_components/Message";
+
+import { getAccessToken } from "@/libs/utils/localStorage";
 
 type RoleType = "sender" | "receiver" | "system";
 
-interface ChatType {
+export interface ChatType {
   type: RoleType;
   message: string;
 }
@@ -22,21 +25,6 @@ export default function ChattingRoomPage() {
       message: "",
     },
   });
-
-  const chatStyleVariant = {
-    system: {
-      align: "text-center",
-      color: "bg-slate-200",
-    },
-    sender: {
-      align: "text-right",
-      color: "bg-amber-300",
-    },
-    receiver: {
-      align: "text-left",
-      color: "bg-white",
-    },
-  };
 
   const sendMessage = () => {
     // Broadcast the message to all connected clients
@@ -53,14 +41,14 @@ export default function ChattingRoomPage() {
   };
 
   useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
+    const accessToken = getAccessToken();
 
     // 웹소켓 연결 및 토큰 전달
     ws.current = new WebSocket(`${process.env.NEXT_PUBLIC_WEBSOCKET_URL}?token=${accessToken}`);
 
-    // Connection opened
     ws.current.onopen = () => {
       console.log("Connected to WS Server!");
+      // TODO 채팅방 연결
     };
 
     // 토큰이 없거나 토큰이 유효하지 않은 경우 등
@@ -77,7 +65,6 @@ export default function ChattingRoomPage() {
 
     return () => {
       if (ws.current) {
-        console.log("websocket 연결 종료");
         isMounted.current = false;
         ws.current.close();
       }
@@ -91,25 +78,15 @@ export default function ChattingRoomPage() {
       </h1>
       <ul className="p-4 flex flex-col grow gap-4 overflow-y-auto box-border">
         {messages.map((data, index) => (
-          <li className={`${chatStyleVariant[data.type].align}`} key={index}>
-            <span
-              className={`
-                text-sm text-slate-800 px-3 py-2 rounded-2xl 
-                ${chatStyleVariant[data.type].color}
-                `}
-            >
-              {data.message}
-            </span>
-          </li>
+          <Message key={index} data={data} />
         ))}
       </ul>
       <div className="flex sticky bottom-0 w-full bg-white justify-between items-center p-6 gap-2">
         <div className="grow">
           <TextField
-            label=""
             field="message"
-            {...getTextFieldInputProps("message")}
             placeholder="메세지를 입력해주세요.."
+            {...getTextFieldInputProps("message")}
           />
         </div>
         <div className="mt-4 text-end">
