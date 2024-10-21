@@ -16,6 +16,7 @@ import useForm from "@/components/hooks/useForm";
 import TextField from "@/components/TextField";
 import ChattingRow from "./ChattingRow";
 import useToggle from "@/components/hooks/useToggle";
+import { removeAccessToken } from "@/libs/utils/localStorage";
 
 export interface ChattingRoom {
   id: number;
@@ -60,7 +61,7 @@ export default function Chattings() {
     } catch (error) {
       if (error instanceof AxiosError) {
         if (error.status === 401) {
-          localStorage.removeItem("accessToken");
+          removeAccessToken();
         }
         alert(error.response?.data.message);
       }
@@ -82,7 +83,7 @@ export default function Chattings() {
     } catch (error) {
       if (error instanceof AxiosError) {
         if (error.status === 401) {
-          localStorage.removeItem("accessToken");
+          removeAccessToken();
         }
         alert(error.response?.data.message);
       }
@@ -97,7 +98,7 @@ export default function Chattings() {
     } catch (error) {
       if (error instanceof AxiosError) {
         if (error.status === 401) {
-          localStorage.removeItem("accessToken");
+          removeAccessToken();
         }
         alert(error.response?.data.message);
       }

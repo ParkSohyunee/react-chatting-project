@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getAccessToken } from "@/libs/utils/localStorage";
 
 const axiosInstance = axios.create({
   baseURL: `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api`,
@@ -6,7 +7,7 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   (config) => {
-    const accessToken = localStorage.getItem("accessToken");
+    const accessToken = getAccessToken();
     if (accessToken) {
       axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
     }

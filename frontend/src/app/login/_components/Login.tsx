@@ -8,8 +8,10 @@ import { loginUser } from "@/app/api/auth";
 import useForm from "@/components/hooks/useForm";
 import TextField from "@/components/TextField";
 import CustomButton from "@/components/CustomButton";
+
 import { AUTH_ERROR_MESSAGE } from "@/libs/constants/messages";
 import { AUTH_CODE } from "@/libs/constants/errorCode";
+import { setAccessToken } from "@/libs/utils/localStorage";
 
 export default function Login() {
   const router = useRouter();
@@ -31,7 +33,7 @@ export default function Login() {
     try {
       const response = await loginUser(values);
       if (response.status === 200) {
-        localStorage.setItem("accessToken", response.data.accessToken);
+        setAccessToken(response.data.accessToken);
         router.push("/chattings");
       }
     } catch (error) {
