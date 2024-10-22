@@ -7,10 +7,7 @@ interface UseFormProps<T> {
 export default function useForm<T>({ initialState }: UseFormProps<T>) {
   const [values, setValues] = useState(initialState);
 
-  const handleChangeValues = (
-    name: keyof T,
-    e: ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleChangeValues = (name: keyof T, e: ChangeEvent<HTMLInputElement>) => {
     setValues((prev) => ({
       ...prev,
       [name]: e.target.value,
@@ -19,11 +16,10 @@ export default function useForm<T>({ initialState }: UseFormProps<T>) {
 
   const getTextFieldInputProps = (name: keyof T) => {
     const input = values[name];
-    const onChange = (e: ChangeEvent<HTMLInputElement>) =>
-      handleChangeValues(name, e);
+    const onChange = (e: ChangeEvent<HTMLInputElement>) => handleChangeValues(name, e);
 
     return { input, onChange };
   };
 
-  return { values, getTextFieldInputProps };
+  return { values, setValues, getTextFieldInputProps };
 }
